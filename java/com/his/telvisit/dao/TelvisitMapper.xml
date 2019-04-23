@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qhit.telvisit.dao.ITelvisitDao">
+	<!-- 自定义结果集 -->
+	<resultMap id="BaseResultMap" type="com.qhit.telvisit.pojo.Telvisit">
+		<id property="tvid" column="tvid" javaType="java.lang.Integer"></id>
+		<result property="telname" column="telname" javaType="java.lang.String"></result>
+		<result property="teltime" column="teltime" javaType="java.lang.String"></result>
+		<result property="visitreason" column="visitreason" javaType="java.lang.String"></result>
+		<result property="visitreturn" column="visitreturn" javaType="java.lang.String"></result>
+		<result property="visittype" column="visittype" javaType="java.lang.String"></result>
+		<result property="cid" column="cid" javaType="java.lang.Integer"></result>
+	</resultMap>
+
+	<!-- 在各种标签中，id属性必须与接口中的方法名一样，id的值必须是唯一的，parameterType指查询时使用的参数类型，
+	resultType属性指明查询返回的结果集类型    -->
+
+	<sql id="Base_Column_List" >
+		tvid,telname,teltime,visitreason,visitreturn,visittype,cid
+	</sql>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+		select
+		<include refid="Base_Column_List" />
+		from telvisit
+		where tvid = #{tvid}
+	</select>
+	<delete id="delete" parameterType="java.lang.Integer" >
+		delete from telvisit
+		where tvid = #{tvid}
+	</delete>
+	<insert id="insert" parameterType="com.qhit.telvisit.pojo.Telvisit" >
+		insert into telvisit(telname,teltime,visitreason,visitreturn,visittype,cid)
+		values (#{telname},#{teltime},#{visitreason},#{visitreturn},#{visittype},#{cid})
+	</insert>
+	<update id="updateSelective" parameterType="com.qhit.telvisit.pojo.Telvisit" >
+		update telvisit
+		<set >
+			<if test="telname != null and telname!='' " >
+				telname = #{telname},
+			</if>
+			<if test="teltime != null and teltime!='' " >
+				teltime = #{teltime},
+			</if>
+			<if test="visitreason != null and visitreason!='' " >
+				visitreason = #{visitreason},
+			</if>
+			<if test="visitreturn != null and visitreturn!='' " >
+				visitreturn = #{visitreturn},
+			</if>
+			<if test="visittype != null and visittype!='' " >
+				visittype = #{visittype},
+			</if>
+			<if test="cid != null and cid!='' " >
+				cid = #{cid},
+			</if>
+		</set>
+		where tvid = #{tvid}
+	</update>
+	<update id="update" parameterType="com.qhit.telvisit.pojo.Telvisit" >
+		update telvisit
+		set  telname = #{telname}, teltime = #{teltime}, visitreason = #{visitreason}, visitreturn = #{visitreturn}, visittype = #{visittype}, cid = #{cid}
+		where tvid = #{tvid}
+	</update>
+
+
+	<select id="findAll" resultMap="BaseResultMap" >
+		select * from telvisit
+	</select>
+
+	<select id="search" parameterType="com.qhit.telvisit.pojo.Telvisit" resultMap="BaseResultMap">
+		select * from  telvisit
+		<where >
+			<if test="telname != null and telname!='' " >
+				and telname = #{telname}
+			</if>
+			<if test="teltime != null and teltime!='' " >
+				and teltime = #{teltime}
+			</if>
+			<if test="visitreason != null and visitreason!='' " >
+				and visitreason = #{visitreason}
+			</if>
+			<if test="visitreturn != null and visitreturn!='' " >
+				and visitreturn = #{visitreturn}
+			</if>
+			<if test="visittype != null and visittype!='' " >
+				and visittype = #{visittype}
+			</if>
+			<if test="cid != null and cid!='' " >
+				and cid = #{cid}
+			</if>
+		</where>
+	</select>
+</mapper> 

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.qhit.patientRegisterRecord.dao.IPatientRegisterRecordDao"> 
+	<!-- 自定义结果集 --> 
+	<resultMap id="BaseResultMap" type="com.qhit.patientRegisterRecord.pojo.PatientRegisterRecord">
+		<id property="registerId" column="register_id" javaType="java.lang.Integer"></id>
+		<result property="patientId" column="patient_id" javaType="java.lang.Integer"></result>
+		<result property="registerDate" column="register_date" javaType="java.lang.String"></result>
+		<result property="status" column="status" javaType="java.lang.Integer"></result>
+		<association property="baseUser" javaType="com.qhit.baseUser.pojo.BaseUser">
+			<result property="cname" column="cname"></result>
+		</association>
+		<association property="baseUser2" javaType="com.qhit.baseUser.pojo.BaseUser">
+			<result property="cname" column="cname2"></result>
+		</association>
+		<association property="baseDept" javaType="com.qhit.baseDept.pojo.BaseDept">
+			<result property="deptName" column="dept_name"></result>
+		</association>
+		<association property="basePatientInfo" javaType="com.qhit.basePatientInfo.pojo.BasePatientInfo">
+			<result property="patientName" column="patient_name"></result>
+		</association>
+	</resultMap>
+	<!--<resultMap id="BaseResultMap" type="com.qhit.patientRegisterRecord.pojo.PatientRegisterRecord">-->
+		<!--<result property="registerDate" column="register_date"></result>-->
+		<!--<result property="status" column="status"></result>-->
+	<!--</resultMap>-->
+ 
+	<!-- 在各种标签中，id属性必须与接口中的方法名一样，id的值必须是唯一的，parameterType指查询时使用的参数类型， 
+	resultType属性指明查询返回的结果集类型    --> 
+ 
+	<sql id="Base_Column_List" > 
+		register_id,patient_id,dept_id,register_date,record_user,doctor_id,status 
+	</sql> 
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from patient_register_record 
+		where register_id = #{registerId} 
+	</select> 
+	<delete id="delete" parameterType="java.lang.Integer" > 
+		delete from patient_register_record 
+		where register_id = #{registerId} 
+	</delete> 
+	<insert id="insert" parameterType="com.qhit.patientRegisterRecord.pojo.PatientRegisterRecord" > 
+		insert into patient_register_record(patient_id,dept_id,register_date,record_user,doctor_id,status) 
+		values (#{patientId},#{deptId},#{registerDate},#{recordUser},#{doctorId},#{status}) 
+	</insert> 
+	<update id="updateSelective" parameterType="com.qhit.patientRegisterRecord.pojo.PatientRegisterRecord" > 
+		update patient_register_record 
+		<set > 
+			<if test="patientId != null and patientId!='' " > 
+				patient_id = #{patientId}, 
+			</if> 
+			<if test="deptId != null and deptId!='' " > 
+				dept_id = #{deptId}, 
+			</if> 
+			<if test="registerDate != null and registerDate!='' " > 
+				register_date = #{registerDate}, 
+			</if> 
+			<if test="recordUser != null and recordUser!='' " > 
+				record_user = #{recordUser}, 
+			</if> 
+			<if test="doctorId != null and doctorId!='' " > 
+				doctor_id = #{doctorId}, 
+			</if> 
+			<if test="status != null and status!='' " > 
+				status = #{status}, 
+			</if> 
+		</set> 
+		where register_id = #{registerId} 
+	</update> 
+	<update id="update" parameterType="com.qhit.patientRegisterRecord.pojo.PatientRegisterRecord" > 
+		update patient_register_record 
+		set  patient_id = #{patientId}, dept_id = #{deptId}, register_date = #{registerDate}, record_user = #{recordUser}, doctor_id = #{doctorId}, status = #{status} 
+		where register_id = #{registerId} 
+	</update> 
+	<select id="findAll" resultMap="BaseResultMap" > 
+		<!--select-->
+		<!--<include refid="Base_Column_List" />-->
+		<!--from patient_register_record-->
+		SELECT prr.register_id, bpi.patient_name,bd.dept_name,prr.register_date,bu.cname,bu2.cname AS'cname2',prr.status
+		from patient_register_record prr
+		JOIN base_patient_info bpi ON prr.patient_id=bpi.patient_id
+		JOIN base_dept bd ON prr.dept_id=bd.dept_id
+		JOIN base_user bu ON prr.record_user=bu.user_id
+		JOIN base_user bu2 ON prr.doctor_id=bu2.user_id;
+	</select> 
+	<select id="findByPatientId" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from patient_register_record 
+		where patient_id = #{patientId} 
+	</select> 
+	<select id="findByDeptId" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from patient_register_record 
+		where dept_id = #{deptId} 
+	</select> 
+	<select id="findByRegisterDate" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from patient_register_record 
+		where register_date = #{registerDate} 
+	</select> 
+	<select id="findByRecordUser" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from patient_register_record 
+		where record_user = #{recordUser} 
+	</select> 
+	<select id="findByDoctorId" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from patient_register_record 
+		where doctor_id = #{doctorId} 
+	</select> 
+	<select id="findByStatus" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from patient_register_record 
+		where status = #{status} 
+	</select> 
+	<delete id="deleteBatch" parameterType="java.util.Arrays"> 
+		delete from patient_register_record where register_id in 
+		<foreach collection="array" item="id" open="(" close=")" separator=","> 
+			#{id} 
+		</foreach> 
+	</delete> 
+	<select id="search" parameterType="com.qhit.patientRegisterRecord.pojo.PatientRegisterRecord" resultMap="BaseResultMap"> 
+		select * from  patient_register_record 
+		<where > 
+			<if test="patientId != null and patientId!='' " > 
+				 and patient_id = #{patientId} 
+			</if> 
+			<if test="deptId != null and deptId!='' " > 
+				 and dept_id = #{deptId} 
+			</if> 
+			<if test="registerDate != null and registerDate!='' " > 
+				 and register_date = #{registerDate} 
+			</if> 
+			<if test="recordUser != null and recordUser!='' " > 
+				 and record_user = #{recordUser} 
+			</if> 
+			<if test="doctorId != null and doctorId!='' " > 
+				 and doctor_id = #{doctorId} 
+			</if> 
+			<if test="status != null and status!='' " > 
+				 and status = #{status} 
+			</if> 
+		</where> 
+	</select> 
+</mapper> 
