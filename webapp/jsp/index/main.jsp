@@ -24,7 +24,7 @@
     </style>
 </head>
 <body class="main">
-    <div id="div1">四平市第二人民医院</div>
+    <div id="div1">商丘市公疗医院</div>
     <div id="div2">信息管理系统</div>
 </body>
 </html>

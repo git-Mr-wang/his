@@ -12,7 +12,7 @@
     <title>首页</title>
     <script>
         $(function () {
-            $(document).attr("title","四平市医院");
+            $(document).attr("title","商丘市公疗医院");
         })
     </script>
 </head>
