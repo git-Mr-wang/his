@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
+                        http://www.springframework.org/schema/context    
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd    
+                        http://www.springframework.org/schema/mvc    
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+    <!-- 自动扫描 -->  
+    <context:component-scan base-package="com.qhit" />
+    
+    <!-- 引入配置文件 -->  
+    <bean id="propertyConfigurer"  
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+        <property name="location" value="classpath:jdbc.properties" />
+    </bean>
+
+    <bean id="dataSource"
+          class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close">
+        <property name="driverClass">
+            <value>${driverClass}</value>
+        </property>
+        <property name="jdbcUrl">
+            <value>${jdbcUrl}</value>
+        </property>
+        <property name="user">
+            <value>${user}</value>
+        </property>
+        <property name="password">
+            <value>${password}</value>
+        </property>
+        <!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 -->
+        <property name="acquireIncrement">
+            <value>${acquireIncrement}</value>
+        </property>
+        <!--初始化时获取三个连接，取值应在minPoolSize与maxPoolSize之间。Default: 3 -->
+        <property name="initialPoolSize">
+            <value>${initialPoolSize}</value>
+        </property>
+        <property name="minPoolSize">
+            <value>${minPoolSize}</value>
+        </property>
+        <property name="maxPoolSize">
+            <value>${maxPoolSize}</value>
+        </property>
+
+    </bean>
+
+  
+    <!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->  
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
+        <property name="dataSource" ref="dataSource" />  
+        <!-- 自动扫描mapping.xml文件 -->  
+        <property name="mapperLocations" value="classpath:com/qhit/*/dao/*.xml"></property>
+        <!--打印sql-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+    </bean>
+  
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 -->  
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+        <property name="basePackage" value="com.qhit.*.dao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>  
+    </bean>
+
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    <!-- 注解方式配置事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+</beans>

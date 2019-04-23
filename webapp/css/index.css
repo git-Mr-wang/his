@@ -1,0 +1,83 @@
+body{
+    background-color: #d2dae9;
+    color: dimgrey;
+}
+.login {
+    position: absolute;
+    padding: 10px;
+    left: calc(50% - 200px);
+    top: calc(50% - 13em);
+    width: 400px;
+    height: 420px;
+    border-radius: 3px;
+    background: white;
+    box-shadow: 0 1px 5px 0 rgba(0,0,0,0.26);
+}
+
+.login .photo{
+    position: relative;
+    width: 103px;
+    height: 103px;
+    margin: 30px 145px;
+    background-image: url("../images/login.png");
+}
+.login > span {
+    display: block;
+    text-align: center;
+    margin: -15px 0;
+    font-size: 15px;
+}
+
+.login .form{
+    margin-top: 50px;
+}
+
+
+.content > span{
+    display: inline-block;
+    width: 60px;
+    margin:10px 20px ;
+    font-size: 15px;
+}
+.content > input{
+    width: 250px;
+    height: 30px;
+    border-width: 1px;
+    border-radius: 3px;
+}
+
+.btn{
+    margin-top:60px;
+    margin-right: 60px;
+    text-align: right;
+}
+.btn button{
+    margin-left: 20px;
+    width: 80px;
+    height: 30px;
+    border-width: 0px;
+    border-radius: 5px;
+    color: white;
+    background-color: rgb(3,169,245);
+}
+
+#error{
+    font-size: 8px;
+    color:red;
+    margin-left: 20px;
+}
+
+/*注册*/
+.register{
+    margin-top: 100px;
+    margin-left: 200px;
+}
+#registerBtn{
+    text-align: left;
+    margin-left: 20px;
+}
+
+/**提醒 */
+#repeatPasswordnotice,#usernamenotice{
+    width: 160px;
+}
