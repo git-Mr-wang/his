@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.qhit.inPatient.dao.IInPatientDao"> 
+	<!-- 自定义结果集 --> 
+	<resultMap id="BaseResultMap" type="com.qhit.inPatient.pojo.InPatient"> 
+		<id property="patientId" column="patient_id" javaType="java.lang.Integer"></id> 
+		<result property="patientName" column="patient_name" javaType="java.lang.String"></result> 
+		<result property="sex" column="sex" javaType="java.lang.String"></result> 
+		<result property="birth" column="birth" javaType="java.lang.String"></result> 
+		<result property="bedNum" column="bed_num" javaType="java.lang.String"></result> 
+		<result property="amount" column="amount" javaType="java.lang.Double"></result> 
+		<result property="status" column="status" javaType="java.lang.Integer"></result> 
+	</resultMap> 
+ 
+	<!-- 在各种标签中，id属性必须与接口中的方法名一样，id的值必须是唯一的，parameterType指查询时使用的参数类型， 
+	resultType属性指明查询返回的结果集类型    --> 
+ 
+	<sql id="Base_Column_List" > 
+		patient_id,patient_name,sex,birth,bed_num,amount,status 
+	</sql> 
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from in_patient 
+		where patient_id = #{patientId} 
+	</select>
+	<select id="search2" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+		select
+		<include refid="Base_Column_List" />
+		from in_patient
+		where status = #{status}
+	</select>
+	<delete id="delete" parameterType="java.lang.Integer" > 
+		delete from in_patient 
+		where patient_id = #{patientId} 
+	</delete> 
+	<insert id="insert" parameterType="com.qhit.inPatient.pojo.InPatient" > 
+		insert into in_patient(patient_name,sex,birth,bed_num,amount,status) 
+		values (#{patientName},#{sex},#{birth},#{bedNum},#{amount},#{status}) 
+	</insert> 
+	<update id="updateSelective" parameterType="com.qhit.inPatient.pojo.InPatient" > 
+		update in_patient 
+		<set > 
+			<if test="patientName != null and patientName!='' " > 
+				patient_name = #{patientName},
+			</if> 
+			<if test="sex != null and sex!='' " > 
+				sex = #{sex}, 
+			</if> 
+			<if test="birth != null and birth!='' " > 
+				birth = #{birth}, 
+			</if> 
+			<if test="bedNum != null and bedNum!='' " > 
+				bed_num = #{bedNum}, 
+			</if> 
+			<if test="amount != null and amount!='' " > 
+				amount = #{amount}, 
+			</if> 
+			<if test="status != null and status!='' " > 
+				status = #{status}, 
+			</if> 
+		</set> 
+		where patient_id = #{patientId} 
+	</update> 
+	<update id="update" parameterType="com.qhit.inPatient.pojo.InPatient" > 
+		update in_patient 
+		set  patient_name = #{patientName}, sex = #{sex}, birth = #{birth}, bed_num = #{bedNum}, amount = #{amount}, status = #{status} 
+		where patient_id = #{patientId} 
+	</update> 
+	<select id="findAll" resultMap="BaseResultMap" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from in_patient 
+	</select>
+	<select id="findAllSort" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select
+		<include refid="Base_Column_List" />
+		from in_patient
+		order by birth desc
+	</select>
+	<select id="findAllSort2" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select
+		<include refid="Base_Column_List" />
+		from in_patient
+		order by birth asc
+	</select>
+	<select id="findByPatientName" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from in_patient 
+		where patient_name = #{patientName} 
+	</select> 
+	<select id="findBySex" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from in_patient 
+		where sex = #{sex} 
+	</select> 
+	<select id="findByBirth" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from in_patient 
+		where birth = #{birth} 
+	</select> 
+	<select id="findByBedNum" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from in_patient 
+		where bed_num = #{bedNum} 
+	</select> 
+	<select id="findByAmount" resultMap="BaseResultMap" parameterType="java.lang.Double" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from in_patient 
+		where amount = #{amount} 
+	</select> 
+	<select id="findByStatus" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from in_patient 
+		where status = #{status} 
+	</select> 
+	<delete id="deleteBatch" parameterType="java.util.Arrays"> 
+		delete from in_patient where patient_id in 
+		<foreach collection="array" item="id" open="(" close=")" separator=","> 
+			#{id} 
+		</foreach> 
+	</delete> 
+	<select id="search" parameterType="com.qhit.inPatient.pojo.InPatient" resultMap="BaseResultMap"> 
+		select * from  in_patient 
+		<where > 
+			<if test="patientName != null and patientName!='' " > 
+				 and patient_name like '%${patientName}%'
+			</if> 
+			<if test="sex != null and sex!='' " > 
+				 and sex = #{sex} 
+			</if> 
+			<if test="birth != null and birth!='' " > 
+				 and birth = #{birth} 
+			</if> 
+			<if test="bedNum != null and bedNum!='' " > 
+				 and bed_num = #{bedNum} 
+			</if> 
+			<if test="amount != null and amount!='' " > 
+				 and amount = #{amount} 
+			</if> 
+			<if test="status != null and status!='' " > 
+				 and status = #{status} 
+			</if> 
+		</where> 
+	</select> 
+</mapper> 

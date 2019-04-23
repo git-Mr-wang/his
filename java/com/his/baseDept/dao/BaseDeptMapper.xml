@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.qhit.baseDept.dao.IBaseDeptDao"> 
+	<!-- 自定义结果集 --> 
+	<resultMap id="BaseResultMap" type="com.qhit.baseDept.pojo.BaseDept"> 
+		<id property="deptId" column="dept_id" javaType="java.lang.Integer"></id> 
+		<result property="deptName" column="dept_name" javaType="java.lang.String"></result> 
+	</resultMap> 
+ 
+	<!-- 在各种标签中，id属性必须与接口中的方法名一样，id的值必须是唯一的，parameterType指查询时使用的参数类型， 
+	resultType属性指明查询返回的结果集类型    --> 
+ 
+	<sql id="Base_Column_List" > 
+		dept_id,dept_name 
+	</sql> 
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_dept 
+		where dept_id = #{deptId} 
+	</select> 
+	<delete id="delete" parameterType="java.lang.Integer" > 
+		delete from base_dept 
+		where dept_id = #{deptId} 
+	</delete> 
+	<insert id="insert" parameterType="com.qhit.baseDept.pojo.BaseDept" > 
+		insert into base_dept(dept_name) 
+		values (#{deptName}) 
+	</insert> 
+	<update id="updateSelective" parameterType="com.qhit.baseDept.pojo.BaseDept" > 
+		update base_dept 
+		<set > 
+			<if test="deptName != null and deptName!='' " > 
+				dept_name = #{deptName}, 
+			</if> 
+		</set> 
+		where dept_id = #{deptId} 
+	</update> 
+	<update id="update" parameterType="com.qhit.baseDept.pojo.BaseDept" > 
+		update base_dept 
+		set  dept_name = #{deptName} 
+		where dept_id = #{deptId} 
+	</update> 
+	<select id="findAll" resultMap="BaseResultMap" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_dept 
+	</select> 
+	<select id="findByDeptName" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_dept 
+		where dept_name = #{deptName} 
+	</select> 
+	<delete id="deleteBatch" parameterType="java.util.Arrays"> 
+		delete from base_dept where dept_id in 
+		<foreach collection="array" item="id" open="(" close=")" separator=","> 
+			#{id} 
+		</foreach> 
+	</delete> 
+	<select id="search" parameterType="com.qhit.baseDept.pojo.BaseDept" resultMap="BaseResultMap"> 
+		select * from  base_dept 
+		<where > 
+			<if test="deptName != null and deptName!='' " > 
+				 and dept_name = #{deptName} 
+			</if> 
+		</where> 
+	</select> 
+</mapper> 

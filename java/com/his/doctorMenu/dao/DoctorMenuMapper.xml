@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.qhit.doctorMenu.dao.IDoctorMenuDao"> 
+	<!-- 自定义结果集 --> 
+	<resultMap id="BaseResultMap" type="com.qhit.doctorMenu.pojo.DoctorMenu"> 
+		<id property="menuId" column="menu_id" javaType="java.lang.Integer"></id> 
+		<result property="menuName" column="menu_name" javaType="java.lang.String"></result> 
+		<result property="userId" column="user_id" javaType="java.lang.Integer"></result> 
+		<result property="description" column="description" javaType="java.lang.String"></result> 
+		<result property="type" column="type" javaType="java.lang.Integer"></result>
+		<result property="typeEsc" column="typeEsc" javaType="java.lang.String"></result>
+		<association property="baseUser" javaType="com.qhit.baseUser.pojo.BaseUser">
+			<result property="userName" column="user_name"></result>
+		</association>
+	</resultMap> 
+ 
+	<!-- 在各种标签中，id属性必须与接口中的方法名一样，id的值必须是唯一的，parameterType指查询时使用的参数类型， 
+	resultType属性指明查询返回的结果集类型    --> 
+ 
+	<sql id="Base_Column_List" > 
+		menu_id,menu_name,user_id,description,type 
+	</sql> 
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from doctor_menu 
+		where menu_id = #{menuId} 
+	</select> 
+	<delete id="delete" parameterType="java.lang.Integer" > 
+		delete from doctor_menu 
+		where menu_id = #{menuId} 
+	</delete> 
+	<insert id="insert" parameterType="com.qhit.doctorMenu.pojo.DoctorMenu" > 
+		insert into doctor_menu(menu_name,user_id,description,type) 
+		values (#{menuName},#{userId},#{description},#{type}) 
+	</insert> 
+	<update id="updateSelective" parameterType="com.qhit.doctorMenu.pojo.DoctorMenu" > 
+		update doctor_menu 
+		<set > 
+			<if test="menuName != null and menuName!='' " > 
+				menu_name = #{menuName}, 
+			</if> 
+			<if test="userId != null and userId!='' " > 
+				user_id = #{userId}, 
+			</if> 
+			<if test="description != null and description!='' " > 
+				description = #{description}, 
+			</if> 
+			<if test="type != null and type!='' " > 
+				type = #{type}, 
+			</if> 
+		</set> 
+		where menu_id = #{menuId} 
+	</update> 
+	<update id="update" parameterType="com.qhit.doctorMenu.pojo.DoctorMenu" > 
+		update doctor_menu 
+		set  menu_name = #{menuName}, user_id = #{userId}, description = #{description}, type = #{type} 
+		where menu_id = #{menuId} 
+	</update> 
+	<select id="findAll" resultMap="BaseResultMap" >
+-- 		SELECT * from doctor_menu dm JOIN base_user bu ON dm.user_id=bu.user_id;
+		SELECT t.*,CASE t.type WHEN 1 THEN '套餐仅自己可用'
+		WHEN 2 THEN '套餐全科室都可用' WHEN 3 THEN '套餐所有医生都可用' END AS typeEsc,b.user_name
+		from
+		doctor_menu t JOIN base_user b ON t.user_id=b.user_id
+		<!--select-->
+		<!--<include refid="Base_Column_List" />-->
+		<!--from doctor_menu-->
+	</select>
+
+	<select id="findByType" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from doctor_menu 
+		where type = #{type} 
+	</select> 
+
+	<select id="search" parameterType="com.qhit.doctorMenu.pojo.DoctorMenu" resultMap="BaseResultMap"> 
+		select * from  doctor_menu 
+		<where > 
+			<if test="menuName != null and menuName!='' " > 
+				 and menu_name = #{menuName} 
+			</if> 
+			<if test="userId != null and userId!='' " > 
+				 and user_id = #{userId} 
+			</if> 
+			<if test="description != null and description!='' " > 
+				 and description = #{description} 
+			</if> 
+			<if test="type != null and type!='' " > 
+				 and type = #{type} 
+			</if> 
+		</where> 
+	</select> 
+</mapper> 

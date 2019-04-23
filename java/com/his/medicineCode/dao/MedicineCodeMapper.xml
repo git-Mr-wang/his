@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.qhit.medicineCode.dao.IMedicineCodeDao"> 
+	<!-- 自定义结果集 -->
+	<resultMap id="BaseResultMap" type="com.qhit.medicineCode.pojo.MedicineCode">
+		<result property="typeName" column="type_name"></result>
+		<result property="specification" column="specification"></result>
+		<result property="manCode" column="man_code"></result>
+		<result property="drugForm" column="drug_form"></result>
+		<result property="aliasName" column="alias_name"></result>
+		<result property="medicineName" column="MEDICINE_NAME"></result>
+		<result property="retailPrice" column="retail_price"></result>
+		<result property="codeId" column="code_id"></result>
+		<result property="manChnName" column="man_chn_name"></result>
+		<result property="drugNotesPatient" column="drug_notes_patient"></result>
+		<result property="stockPrice" column="stock_price"></result>
+		<result property="drugNote" column="drug_note"></result>
+		<result property="stockUnit" column="stock_unit"></result>
+		<result property="typeCode" column="type_code"></result>
+		<association property="doctorMenuMedicine" javaType="com.qhit.doctorMenuMedicine.pojo.DoctorMenuMedicine">
+			<result property="amt" column="amt"></result>
+			<result property="mdId" column="md_id"></result>
+			<result property="menuId" column="menu_id"></result>
+			<result property="codeId" column="code_id"></result>
+		</association>
+	</resultMap> 
+ 
+	<!-- 在各种标签中，id属性必须与接口中的方法名一样，id的值必须是唯一的，parameterType指查询时使用的参数类型， 
+	resultType属性指明查询返回的结果集类型    --> 
+ 
+	<sql id="Base_Column_List" > 
+		code_id,MEDICINE_NAME,alias_name,specification,man_code,man_chn_name,type_name,type_code,stock_unit,retail_price,stock_price,drug_notes_patient,drug_note,drug_form 
+	</sql> 
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from medicine_code 
+		where code_id = #{codeId} 
+	</select> 
+	<delete id="delete" parameterType="java.lang.Integer" > 
+		delete from medicine_code 
+		where code_id = #{codeId} 
+	</delete> 
+	<insert id="insert" parameterType="com.qhit.medicineCode.pojo.MedicineCode" > 
+		insert into medicine_code(MEDICINE_NAME,alias_name,specification,man_code,man_chn_name,type_name,type_code,stock_unit,retail_price,stock_price,drug_notes_patient,drug_note,drug_form) 
+		values (#{medicineName},#{aliasName},#{specification},#{manCode},#{manChnName},#{typeName},#{typeCode},#{stockUnit},#{retailPrice},#{stockPrice},#{drugNotesPatient},#{drugNote},#{drugForm}) 
+	</insert> 
+	<update id="updateSelective" parameterType="com.qhit.medicineCode.pojo.MedicineCode" > 
+		update medicine_code 
+		<set > 
+			<if test="medicineName != null and medicineName!='' " > 
+				MEDICINE_NAME = #{medicineName}, 
+			</if> 
+			<if test="aliasName != null and aliasName!='' " > 
+				alias_name = #{aliasName}, 
+			</if> 
+			<if test="specification != null and specification!='' " > 
+				specification = #{specification}, 
+			</if> 
+			<if test="manCode != null and manCode!='' " > 
+				man_code = #{manCode}, 
+			</if> 
+			<if test="manChnName != null and manChnName!='' " > 
+				man_chn_name = #{manChnName}, 
+			</if> 
+			<if test="typeName != null and typeName!='' " > 
+				type_name = #{typeName}, 
+			</if> 
+			<if test="typeCode != null and typeCode!='' " > 
+				type_code = #{typeCode}, 
+			</if> 
+			<if test="stockUnit != null and stockUnit!='' " > 
+				stock_unit = #{stockUnit}, 
+			</if> 
+			<if test="retailPrice != null and retailPrice!='' " > 
+				retail_price = #{retailPrice}, 
+			</if> 
+			<if test="stockPrice != null and stockPrice!='' " > 
+				stock_price = #{stockPrice}, 
+			</if> 
+			<if test="drugNotesPatient != null and drugNotesPatient!='' " > 
+				drug_notes_patient = #{drugNotesPatient}, 
+			</if> 
+			<if test="drugNote != null and drugNote!='' " > 
+				drug_note = #{drugNote}, 
+			</if> 
+			<if test="drugForm != null and drugForm!='' " > 
+				drug_form = #{drugForm}, 
+			</if> 
+		</set> 
+		where code_id = #{codeId} 
+	</update> 
+	<update id="update" parameterType="com.qhit.medicineCode.pojo.MedicineCode" > 
+		update medicine_code 
+		set  MEDICINE_NAME = #{medicineName}, alias_name = #{aliasName}, specification = #{specification}, man_code = #{manCode}, man_chn_name = #{manChnName}, type_name = #{typeName}, type_code = #{typeCode}, stock_unit = #{stockUnit}, retail_price = #{retailPrice}, stock_price = #{stockPrice}, drug_notes_patient = #{drugNotesPatient}, drug_note = #{drugNote}, drug_form = #{drugForm} 
+		where code_id = #{codeId} 
+	</update> 
+	<select id="findAll" resultMap="BaseResultMap" >
+		select
+		<include refid="Base_Column_List" />
+		from medicine_code
+	</select>
+	<select id="notOwned" resultMap="BaseResultMap" >
+		SELECT * from medicine_code mc1
+		WHERE mc1.MEDICINE_NAME NOT IN (SELECT mc.MEDICINE_NAME from medicine_code mc JOIN
+		doctor_menu_medicine dmm ON mc.code_id=dmm.code_id
+		WHERE dmm.menu_id = #{menuId});
+		<!--select-->
+		<!--<include refid="Base_Column_List" />-->
+		<!--from medicine_code-->
+	</select>
+	<select id="owned" resultMap="BaseResultMap" >
+		SELECT * from medicine_code mc JOIN
+		doctor_menu_medicine dmm ON mc.code_id=dmm.code_id
+		WHERE dmm.menu_id =#{menuId};
+		<!--select-->
+		<!--<include refid="Base_Column_List" />-->
+		<!--from medicine_code-->
+	</select>
+
+	<select id="search" parameterType="com.qhit.medicineCode.pojo.MedicineCode" resultMap="BaseResultMap"> 
+		select * from  medicine_code 
+		<where > 
+			<if test="medicineName != null and medicineName!='' " > 
+				 and MEDICINE_NAME = #{medicineName} 
+			</if> 
+			<if test="aliasName != null and aliasName!='' " > 
+				 and alias_name = #{aliasName} 
+			</if> 
+			<if test="specification != null and specification!='' " > 
+				 and specification = #{specification} 
+			</if> 
+			<if test="manCode != null and manCode!='' " > 
+				 and man_code = #{manCode} 
+			</if> 
+			<if test="manChnName != null and manChnName!='' " > 
+				 and man_chn_name = #{manChnName} 
+			</if> 
+			<if test="typeName != null and typeName!='' " > 
+				 and type_name = #{typeName} 
+			</if> 
+			<if test="typeCode != null and typeCode!='' " > 
+				 and type_code = #{typeCode} 
+			</if> 
+			<if test="stockUnit != null and stockUnit!='' " > 
+				 and stock_unit = #{stockUnit} 
+			</if> 
+			<if test="retailPrice != null and retailPrice!='' " > 
+				 and retail_price = #{retailPrice} 
+			</if> 
+			<if test="stockPrice != null and stockPrice!='' " > 
+				 and stock_price = #{stockPrice} 
+			</if> 
+			<if test="drugNotesPatient != null and drugNotesPatient!='' " > 
+				 and drug_notes_patient = #{drugNotesPatient} 
+			</if> 
+			<if test="drugNote != null and drugNote!='' " > 
+				 and drug_note = #{drugNote} 
+			</if> 
+			<if test="drugForm != null and drugForm!='' " > 
+				 and drug_form = #{drugForm} 
+			</if> 
+		</where> 
+	</select> 
+</mapper> 

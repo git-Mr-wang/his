@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.qhit.doctorVisitRecord.dao.IDoctorVisitRecordDao"> 
+	<!-- 自定义结果集 --> 
+	<resultMap id="BaseResultMap" type="com.qhit.doctorVisitRecord.pojo.DoctorVisitRecord"> 
+		<id property="vrId" column="vr_id" javaType="java.lang.Integer"></id> 
+		<result property="patientId" column="patient_id" javaType="java.lang.Integer"></result> 
+		<result property="doctorId" column="doctor_id" javaType="java.lang.Integer"></result> 
+		<result property="visitDate" column="visit_date" javaType="java.lang.String"></result> 
+		<result property="symptom" column="symptom" javaType="java.lang.String"></result> 
+		<result property="advice" column="advice" javaType="java.lang.String"></result> 
+		<result property="times" column="times" javaType="java.lang.Integer"></result> 
+		<result property="status" column="status" javaType="java.lang.Integer"></result> 
+	</resultMap> 
+ 
+	<!-- 在各种标签中，id属性必须与接口中的方法名一样，id的值必须是唯一的，parameterType指查询时使用的参数类型， 
+	resultType属性指明查询返回的结果集类型    --> 
+ 
+	<sql id="Base_Column_List" > 
+		vr_id,patient_id,doctor_id,visit_date,symptom,advice,times,status 
+	</sql> 
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from doctor_visit_record 
+		where vr_id = #{vrId} 
+	</select> 
+	<delete id="delete" parameterType="java.lang.Integer" > 
+		delete from doctor_visit_record 
+		where vr_id = #{vrId} 
+	</delete> 
+	<insert id="insert" parameterType="com.qhit.doctorVisitRecord.pojo.DoctorVisitRecord" > 
+		insert into doctor_visit_record(patient_id,doctor_id,visit_date,symptom,advice,times,status) 
+		values (#{patientId},#{doctorId},#{visitDate},#{symptom},#{advice},#{times},#{status}) 
+	</insert> 
+	<update id="updateSelective" parameterType="com.qhit.doctorVisitRecord.pojo.DoctorVisitRecord" > 
+		update doctor_visit_record 
+		<set > 
+			<if test="patientId != null and patientId!='' " > 
+				patient_id = #{patientId}, 
+			</if> 
+			<if test="doctorId != null and doctorId!='' " > 
+				doctor_id = #{doctorId}, 
+			</if> 
+			<if test="visitDate != null and visitDate!='' " > 
+				visit_date = #{visitDate}, 
+			</if> 
+			<if test="symptom != null and symptom!='' " > 
+				symptom = #{symptom}, 
+			</if> 
+			<if test="advice != null and advice!='' " > 
+				advice = #{advice}, 
+			</if> 
+			<if test="times != null and times!='' " > 
+				times = #{times}, 
+			</if> 
+			<if test="status != null and status!='' " > 
+				status = #{status}, 
+			</if> 
+		</set> 
+		where vr_id = #{vrId} 
+	</update> 
+	<update id="update" parameterType="com.qhit.doctorVisitRecord.pojo.DoctorVisitRecord" > 
+		update doctor_visit_record 
+		set  patient_id = #{patientId}, doctor_id = #{doctorId}, visit_date = #{visitDate}, symptom = #{symptom}, advice = #{advice}, times = #{times}, status = #{status} 
+		where vr_id = #{vrId} 
+	</update> 
+	<select id="findAll" resultMap="BaseResultMap" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from doctor_visit_record 
+	</select> 
+	<select id="findByPatientId" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from doctor_visit_record 
+		where patient_id = #{patientId} 
+	</select> 
+	<select id="findByDoctorId" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from doctor_visit_record 
+		where doctor_id = #{doctorId} 
+	</select> 
+	<select id="findByVisitDate" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from doctor_visit_record 
+		where visit_date = #{visitDate} 
+	</select> 
+	<select id="findBySymptom" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from doctor_visit_record 
+		where symptom = #{symptom} 
+	</select> 
+	<select id="findByAdvice" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from doctor_visit_record 
+		where advice = #{advice} 
+	</select> 
+	<select id="findByTimes" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from doctor_visit_record 
+		where times = #{times} 
+	</select> 
+	<select id="findByStatus" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from doctor_visit_record 
+		where status = #{status} 
+	</select> 
+	<delete id="deleteBatch" parameterType="java.util.Arrays"> 
+		delete from doctor_visit_record where vr_id in 
+		<foreach collection="array" item="id" open="(" close=")" separator=","> 
+			#{id} 
+		</foreach> 
+	</delete> 
+	<select id="search" parameterType="com.qhit.doctorVisitRecord.pojo.DoctorVisitRecord" resultMap="BaseResultMap"> 
+		select * from  doctor_visit_record 
+		<where > 
+			<if test="patientId != null and patientId!='' " > 
+				 and patient_id = #{patientId} 
+			</if> 
+			<if test="doctorId != null and doctorId!='' " > 
+				 and doctor_id = #{doctorId} 
+			</if> 
+			<if test="visitDate != null and visitDate!='' " > 
+				 and visit_date = #{visitDate} 
+			</if> 
+			<if test="symptom != null and symptom!='' " > 
+				 and symptom = #{symptom} 
+			</if> 
+			<if test="advice != null and advice!='' " > 
+				 and advice = #{advice} 
+			</if> 
+			<if test="times != null and times!='' " > 
+				 and times = #{times} 
+			</if> 
+			<if test="status != null and status!='' " > 
+				 and status = #{status} 
+			</if> 
+		</where> 
+	</select> 
+</mapper> 

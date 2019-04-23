@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.qhit.baseUser.dao.IBaseUserDao"> 
+	<!-- 自定义结果集 -->
+	<resultMap id="BaseResultMap" type="com.qhit.baseUser.pojo.BaseUser">
+		<id property="userId" column="user_id" javaType="java.lang.Integer"></id>
+		<result property="userName" column="user_name" javaType="java.lang.String"></result>
+		<result property="password" column="password" javaType="java.lang.String"></result>
+		<result property="cname" column="cname" javaType="java.lang.String"></result>
+		<result property="sex" column="sex" javaType="java.lang.String"></result>
+		<result property="deptId" column="dept_id" javaType="java.lang.Integer"></result>
+		<result property="postId" column="post_id" javaType="java.lang.Integer"></result>
+		<association property="baseDept" javaType="com.qhit.baseDept.pojo.BaseDept">
+			<result property="deptName" column="dept_name"></result>
+			<result property="deptId" column="dept_id"></result>
+		</association>
+		<collection property="baseRoleList" select="selectRoleByUserId"  column="user_id"></collection>
+		<collection property="baseFunctionList" select="selectFunctionByUserId"  column="user_id"></collection>
+	</resultMap>
+	<resultMap id="RoleResultMap" type="com.qhit.baseRole.pojo.BaseRole">
+		<id property="rid" column="rid" javaType="java.lang.Integer"></id>
+		<result property="rname" column="rname" javaType="java.lang.String"></result>
+	</resultMap>
+	<resultMap id="FunctionResultMap" type="com.qhit.baseFunction.pojo.BaseFunction">
+		<id property="fid" column="fid" javaType="java.lang.Integer"></id>
+		<result property="fname" column="fname" javaType="java.lang.String"></result>
+		<result property="mid" column="mid" javaType="java.lang.Integer"></result>
+		<result property="url" column="url" javaType="java.lang.String"></result>
+	</resultMap>
+ 
+	<!-- 在各种标签中，id属性必须与接口中的方法名一样，id的值必须是唯一的，parameterType指查询时使用的参数类型， 
+	resultType属性指明查询返回的结果集类型    --> 
+ 
+	<sql id="Base_Column_List" > 
+		user_id,user_name,password,cname,sex,dept_id,post_id 
+	</sql> 
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_user 
+		where user_id = #{userId} 
+	</select> 
+	<delete id="delete" parameterType="java.lang.Integer" > 
+		delete from base_user 
+		where user_id = #{userId} 
+	</delete> 
+	<insert id="insert" parameterType="com.qhit.baseUser.pojo.BaseUser" > 
+		insert into base_user(user_name,password,cname,sex,dept_id,post_id) 
+		values (#{userName},#{password},#{cname},#{sex},#{deptId},#{postId}) 
+	</insert> 
+	<update id="updateSelective" parameterType="com.qhit.baseUser.pojo.BaseUser" > 
+		update base_user 
+		<set > 
+			<if test="userName != null and userName!='' " > 
+				user_name = #{userName}, 
+			</if> 
+			<if test="password != null and password!='' " > 
+				password = #{password}, 
+			</if> 
+			<if test="cname != null and cname!='' " > 
+				cname = #{cname}, 
+			</if> 
+			<if test="sex != null and sex!='' " > 
+				sex = #{sex}, 
+			</if> 
+			<if test="deptId != null and deptId!='' " > 
+				dept_id = #{deptId}, 
+			</if> 
+			<if test="postId != null and postId!='' " > 
+				post_id = #{postId}, 
+			</if> 
+		</set> 
+		where user_id = #{userId} 
+	</update> 
+	<update id="update" parameterType="com.qhit.baseUser.pojo.BaseUser" > 
+		update base_user 
+		set  user_name = #{userName}, password = #{password}, cname = #{cname}, sex = #{sex}, dept_id = #{deptId}, post_id = #{postId} 
+		where user_id = #{userId} 
+	</update> 
+	<select id="findAll" resultMap="BaseResultMap" > 
+		<!--select -->
+		<!--<include refid="Base_Column_List" /> -->
+		<!--from base_user -->
+		SELECT * from base_user bu LEFT JOIN base_dept bd ON bu.dept_id=bd.dept_id;
+	</select> 
+	<select id="findByUserName" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_user 
+		where user_name = #{userName} 
+	</select> 
+	<select id="findByPassword" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_user 
+		where password = #{password} 
+	</select> 
+	<select id="findByCname" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_user 
+		where cname = #{cname} 
+	</select> 
+	<select id="findBySex" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_user 
+		where sex = #{sex} 
+	</select> 
+	<select id="findByDeptId" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_user 
+		where dept_id = #{deptId} 
+	</select> 
+	<select id="findByPostId" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from base_user 
+		where post_id = #{postId} 
+	</select> 
+	<delete id="deleteBatch" parameterType="java.util.Arrays"> 
+		delete from base_user where user_id in 
+		<foreach collection="array" item="id" open="(" close=")" separator=","> 
+			#{id} 
+		</foreach> 
+	</delete> 
+	<select id="search" parameterType="com.qhit.baseUser.pojo.BaseUser" resultMap="BaseResultMap"> 
+		select * from  base_user 
+		<where > 
+			<if test="userName != null and userName!='' " > 
+				 and user_name = #{userName} 
+			</if> 
+			<if test="password != null and password!='' " > 
+				 and password = #{password} 
+			</if> 
+			<if test="cname != null and cname!='' " > 
+				 and cname = #{cname} 
+			</if> 
+			<if test="sex != null and sex!='' " > 
+				 and sex = #{sex} 
+			</if> 
+			<if test="deptId != null and deptId!='' " > 
+				 and dept_id = #{deptId} 
+			</if> 
+			<if test="postId != null and postId!='' " > 
+				 and post_id = #{postId} 
+			</if> 
+		</where> 
+	</select>
+	<select id="login" resultMap="BaseResultMap" parameterType="com.qhit.baseUser.pojo.BaseUser" >
+			SELECT * from base_user bu
+			WHERE bu.user_name=#{userName} AND bu.password=#{password}
+--
+	</select>
+	<select id="selectRoleByUserId" parameterType="java.lang.Integer" resultMap="RoleResultMap">
+		select br.* from base_role br left join base_user_role bur on br.rid = bur.rid where bur.uid=#{0}
+	</select>
+
+	<select id="selectFunctionByUserId" parameterType="java.lang.Integer" resultMap="FunctionResultMap">
+		select distinct  bf.*
+		from base_function bf  join base_role_function brf on brf.fid = bf.fid
+			join base_role br on br.rid = brf.rid
+			join base_user_role bur on br.rid=bur.rid
+			where bur.uid=#{0}
+	</select>
+	<select id="query" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		SELECT * from base_user WHERE cname LIKE concat('%',#{cname},'%') AND sex LIKE concat('%',#{sex},'%')
+	</select>
+	<!--<select id="ajaxSerch" resultMap="BaseResultMap" parameterType="java.lang.String" >-->
+			<!--SELECT * from base_user WHERE dept_id=#{deptId}-->
+	<!--</select>-->
+
+</mapper> 
